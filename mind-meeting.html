@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mind Meeting: Designing Active Participant Engagement</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --navy: #0D2B4E;
+    --blue: #1A56A0;
+    --teal: #0E9B8A;
+    --teal-light: #12C4B0;
+    --sky: #E8F4FD;
+    --mint: #E6F7F5;
+    --white: #FFFFFF;
+    --slate: #4A5568;
+    --light-grey: #F7F9FC;
+    --border: #DDE4EE;
+    --accent-amber: #F5A623;
+    --accent-coral: #E85D4A;
+    --accent-violet: #7C4DFF;
+    --text-dark: #1A202C;
+    --text-mid: #4A5568;
+    --text-light: #718096;
+    --shadow-sm: 0 2px 8px rgba(13,43,78,0.08);
+    --shadow-md: 0 8px 24px rgba(13,43,78,0.12);
+    --shadow-lg: 0 16px 48px rgba(13,43,78,0.16);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    background: var(--white);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 4px;
+    background: linear-gradient(90deg, var(--teal), var(--teal-light));
+    width: 0%; z-index: 9999;
+    transition: width 0.2s ease;
+    box-shadow: 0 0 8px rgba(14,155,138,0.5);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 4px; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+
+  .nav-brand {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--navy);
+    letter-spacing: -0.02em;
+  }
+
+  .nav-brand span { color: var(--teal); }
+
+  .nav-links {
+    display: flex; gap: 0.25rem; list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-mid);
+    text-decoration: none;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+
+  .nav-links a:hover { background: var(--sky); color: var(--blue); }
+
+  .time-badge {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.7rem; font-weight: 600;
+    color: var(--teal);
+    background: var(--mint);
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--navy) 0%, #0D4A6B 50%, #0A2E46 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .hero-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+  }
+  .hero-blob-1 { width: 500px; height: 500px; background: var(--teal); top: -100px; right: -100px; }
+  .hero-blob-2 { width: 400px; height: 400px; background: var(--blue); bottom: -100px; left: -100px; }
+
+  .hero-content { position: relative; z-index: 1; text-align: center; max-width: 860px; }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    background: rgba(14,155,138,0.15);
+    border: 1px solid rgba(14,155,138,0.3);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--teal-light), #4ECDC4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.75);
+    max-width: 580px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+  }
+
+  .outcomes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+  }
+
+  .outcome-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: left;
+    transition: all 0.3s;
+  }
+
+  .outcome-card:hover {
+    background: rgba(255,255,255,0.13);
+    transform: translateY(-3px);
+  }
+
+  .outcome-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    color: white;
+  }
+
+  .outcome-card p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.85);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .scroll-cue {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 5rem 2rem; }
+  .container { max-width: 1040px; margin: 0 auto; }
+
+  .section-eyebrow {
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .section-intro {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+    max-width: 620px;
+    margin-bottom: 3rem;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ── DEFINITION SECTION ── */
+  .definition-section { background: var(--light-grey); }
+
+  .definition-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-md);
+    border-left: 5px solid var(--teal);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;
+    align-items: center;
+  }
+
+  .definition-quote {
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--navy);
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .definition-quote strong { font-weight: 700; font-style: normal; color: var(--teal); }
+
+  .definition-source {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 1rem;
+    font-style: normal;
+  }
+
+  .definition-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  }
+
+  .stat-chip {
+    background: var(--light-grey);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .stat-chip .stat-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block; line-height: 1;
+  }
+
+  .stat-chip .stat-label {
+    font-size: 0.7rem; color: var(--text-mid);
+    font-weight: 500; margin-top: 0.35rem;
+  }
+
+  /* ── PROCESS SECTION ── */
+  .process-section { background: var(--white); }
+
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .process-step {
+    background: var(--white);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .process-step::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 0;
+  }
+
+  .process-step:hover, .process-step.active {
+    border-color: var(--teal);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .process-step:hover::before, .process-step.active::before { opacity: 0.05; }
+
+  .process-step > * { position: relative; z-index: 1; }
+
+  .step-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem; font-weight: 800;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+    transition: color 0.3s;
+  }
+
+  .process-step:hover .step-number,
+  .process-step.active .step-number { color: var(--teal-light); }
+
+  .step-icon-row {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .step-icon {
+    width: 44px; height: 44px;
+    background: var(--sky);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+
+  .process-step:hover .step-icon,
+  .process-step.active .step-icon {
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    color: white;
+  }
+
+  .step-title {
+    font-size: 1rem; font-weight: 700;
+    color: var(--navy);
+  }
+
+  .step-detail {
+    font-size: 0.85rem; color: var(--text-mid);
+    line-height: 1.6;
+    margin-top: 0.5rem;
+  }
+
+  .step-detail-extra {
+    display: none;
+    font-size: 0.8rem;
+    color: var(--text-mid);
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--border);
+    line-height: 1.6;
+  }
+
+  .process-step.active .step-detail-extra { display: block; }
+
+  .step-tap-hint {
+    font-size: 0.7rem;
+    color: var(--teal);
+    font-weight: 500;
+    margin-top: 0.75rem;
+    opacity: 0.7;
+  }
+
+  /* ── PRINCIPLES SECTION ── */
+  .principles-section { background: var(--light-grey); }
+
+  .flip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .flip-card {
+    height: 220px;
+    perspective: 1000px;
+    cursor: pointer;
+  }
+
+  .flip-inner {
+    position: relative; width: 100%; height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+
+  .flip-card:hover .flip-inner,
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+
+  .flip-front, .flip-back {
+    position: absolute; inset: 0;
+    border-radius: var(--radius);
+    backface-visibility: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .flip-front {
+    background: var(--white);
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .flip-back {
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    transform: rotateY(180deg);
+  }
+
+  .flip-front-icon {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .flip-front h4 {
+    font-size: 0.9rem; font-weight: 700;
+    color: var(--navy);
+  }
+
+  .flip-hint {
+    font-size: 0.68rem; color: var(--text-light);
+    margin-top: 0.4rem;
+    font-style: italic;
+  }
+
+  .flip-back p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.9);
+    line-height: 1.6;
+  }
+
+  /* ── THEORY SECTION ── */
+  .theory-section { background: var(--white); }
+
+  .theory-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .theory-card {
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s;
+    border: 1px solid var(--border);
+  }
+
+  .theory-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .theory-card-header {
+    padding: 1.5rem 1.5rem 1rem;
+    position: relative;
+  }
+
+  .theory-tag {
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+    display: inline-block;
+  }
+
+  .theory-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem; font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 0.25rem;
+  }
+
+  .theory-author {
+    font-size: 0.75rem; color: var(--text-light);
+    font-style: italic;
+  }
+
+  .theory-card-body { padding: 0 1.5rem 1.5rem; }
+
+  .theory-plain {
+    font-size: 0.88rem;
+    color: var(--text-mid);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .theory-link {
+    background: var(--light-grey);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    font-size: 0.78rem;
+    color: var(--text-dark);
+    line-height: 1.5;
+  }
+
+  .theory-link strong {
+    color: var(--teal);
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Theory colour variants */
+  .t-kolb .theory-card-header { background: linear-gradient(135deg, #EBF4FF, #DDEEFF); }
+  .t-kolb .theory-tag { background: #DDEEFF; color: var(--blue); }
+  .t-vygotsky .theory-card-header { background: linear-gradient(135deg, #E6F7F5, #CCF0EA); }
+  .t-vygotsky .theory-tag { background: #CCF0EA; color: var(--teal); }
+  .t-flow .theory-card-header { background: linear-gradient(135deg, #FFF5E6, #FFE8C6); }
+  .t-flow .theory-tag { background: #FFE8C6; color: #D4820A; }
+  .t-sdt .theory-card-header { background: linear-gradient(135deg, #F0EAFF, #E2D4FF); }
+  .t-sdt .theory-tag { background: #E2D4FF; color: var(--accent-violet); }
+
+  /* ── QUIZ SECTION ── */
+  .quiz-section {
+    background: linear-gradient(135deg, var(--navy) 0%, #0D4A6B 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .quiz-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .quiz-section .section-title,
+  .quiz-section .section-eyebrow { color: var(--teal-light); }
+
+  .quiz-section .section-intro { color: rgba(255,255,255,0.65); }
+
+  .quiz-wrapper {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius);
+    padding: 2rem;
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+
+  .quiz-progress-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .quiz-progress-label {
+    font-size: 0.75rem; font-weight: 600;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .quiz-dots {
+    display: flex; gap: 0.4rem;
+  }
+
+  .quiz-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: all 0.3s;
+  }
+
+  .quiz-dot.done { background: var(--teal); }
+  .quiz-dot.current { background: var(--white); transform: scale(1.2); }
+
+  .quiz-question {
+    font-size: 1.05rem; font-weight: 600;
+    color: var(--white);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+  }
+
+  .quiz-options {
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+
+  .quiz-option {
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 0.9rem 1.25rem;
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+
+  .quiz-option:hover:not(:disabled) {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.3);
+    transform: translateX(4px);
+  }
+
+  .quiz-option.correct {
+    background: rgba(14,155,138,0.25);
+    border-color: var(--teal-light);
+    color: white;
+  }
+
+  .quiz-option.wrong {
+    background: rgba(232,93,74,0.2);
+    border-color: #E85D4A;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .quiz-option:disabled { cursor: default; }
+
+  .option-letter {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .quiz-option.correct .option-letter { background: var(--teal); }
+  .quiz-option.wrong .option-letter { background: #E85D4A; }
+
+  .quiz-feedback {
+    margin-top: 1rem;
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    display: none;
+    align-items: flex-start; gap: 0.6rem;
+    line-height: 1.5;
+  }
+
+  .quiz-feedback.show { display: flex; }
+  .quiz-feedback.correct-fb { background: rgba(14,155,138,0.2); color: #8FE8DE; border: 1px solid rgba(14,155,138,0.3); }
+  .quiz-feedback.wrong-fb { background: rgba(232,93,74,0.15); color: #F9A99F; border: 1px solid rgba(232,93,74,0.25); }
+
+  .quiz-next {
+    display: none;
+    margin-top: 1.25rem;
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.75rem;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .quiz-next:hover { background: var(--teal-light); transform: translateY(-1px); }
+  .quiz-next.show { display: inline-block; }
+
+  .quiz-result {
+    text-align: center;
+    padding: 1rem 0;
+    display: none;
+  }
+
+  .quiz-result.show { display: block; }
+
+  .result-score {
+    font-family: 'Syne', sans-serif;
+    font-size: 4rem; font-weight: 800;
+    background: linear-gradient(90deg, var(--teal-light), #7CF9F2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+
+  .result-label {
+    font-size: 1.1rem; color: rgba(255,255,255,0.75);
+    margin: 0.5rem 0 1rem;
+  }
+
+  .result-msg {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+    max-width: 440px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .quiz-restart {
+    background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.8);
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .quiz-restart:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.5);
+  }
+
+  /* ── TAKEAWAYS SECTION ── */
+  .takeaways-section { background: var(--mint); }
+
+  .takeaway-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .takeaway-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s;
+  }
+
+  .takeaway-item:hover { transform: translateY(-2px); }
+
+  .takeaway-num {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem; font-weight: 800;
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .takeaway-item p {
+    font-size: 0.88rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  .takeaway-item p strong { color: var(--navy); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy);
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+
+  .footer-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem; font-weight: 800;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-brand span { color: var(--teal-light); }
+
+  footer p {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-up:nth-child(2) { transition-delay: 0.1s; }
+  .fade-up:nth-child(3) { transition-delay: 0.2s; }
+  .fade-up:nth-child(4) { transition-delay: 0.3s; }
+  .fade-up:nth-child(5) { transition-delay: 0.4s; }
+  .fade-up:nth-child(6) { transition-delay: 0.5s; }
+  .fade-up:nth-child(7) { transition-delay: 0.6s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .definition-card { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2rem; }
+    section { padding: 3.5rem 1.25rem; }
+    .outcomes-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 480px) {
+    .outcomes-grid { grid-template-columns: 1fr; }
+    .flip-grid { grid-template-columns: 1fr 1fr; }
+    .flip-card { height: 190px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav>
+  <div class="nav-brand">Mind<span>Meeting</span></div>
+  <ul class="nav-links">
+    <li><a href="#definition">What is it?</a></li>
+    <li><a href="#process">How it works</a></li>
+    <li><a href="#principles">Principles</a></li>
+    <li><a href="#theory">Theory</a></li>
+    <li><a href="#quiz">Quiz</a></li>
+  </ul>
+  <div class="time-badge"><i class="fa-regular fa-clock"></i> 5 min read</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <i class="fa-solid fa-brain"></i>
+      EventProfs Learning Module
+    </div>
+    <h1>Designing <em>Active</em><br>Participant Engagement</h1>
+    <p class="hero-subtitle">An interactive guide to the Mind Meeting format — where every attendee becomes an active contributor, not a passive observer.</p>
+
+    <div class="outcomes-grid">
+      <div class="outcome-card">
+        <div class="outcome-icon"><i class="fa-solid fa-lightbulb"></i></div>
+        <p>Define the Mind Meeting format and what makes it distinct from traditional conferences.</p>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-icon"><i class="fa-solid fa-diagram-project"></i></div>
+        <p>Explain the step-by-step process and the design principles behind it.</p>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-icon"><i class="fa-solid fa-flask"></i></div>
+        <p>Connect Mind Meetings to four key learning and engagement theories.</p>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-icon"><i class="fa-solid fa-star"></i></div>
+        <p>Apply these insights to your own event design practice.</p>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue">
+    <span>Scroll to explore</span>
+    <i class="fa-solid fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- DEFINITION -->
+<section class="definition-section" id="definition">
+  <div class="container">
+    <p class="section-eyebrow fade-up">What is a Mind Meeting?</p>
+    <h2 class="section-title fade-up">A format built for <em>thinking</em> together</h2>
+    <p class="section-intro fade-up">The traditional conference model — speaker on stage, audience in seats — is being challenged. Mind Meetings flip that dynamic entirely.</p>
+
+    <div class="definition-card fade-up">
+      <div>
+        <p class="definition-quote">
+          A Mind Meeting is a structured, <strong>participant-driven session</strong> where attendees collectively define the agenda, share expertise, and co-create knowledge through guided dialogue and collaborative problem-solving.
+        </p>
+        <p class="definition-source">Based on the EventProfs Vision 2025 Report — reshaping professional events for the knowledge economy.</p>
+      </div>
+      <div class="definition-stats">
+        <div class="stat-chip">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Participants contribute</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-number">0</span>
+          <span class="stat-label">Passive observers</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-number">Co</span>
+          <span class="stat-label">Created agenda</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-number">↑3×</span>
+          <span class="stat-label">Knowledge retention*</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section" id="process">
+  <div class="container">
+    <p class="section-eyebrow fade-up">Step by Step</p>
+    <h2 class="section-title fade-up">How a Mind Meeting works</h2>
+    <p class="section-intro fade-up">Click each step to discover what happens — and why it matters for engagement.</p>
+
+    <div class="process-steps">
+      <div class="process-step fade-up" onclick="toggleStep(this)">
+        <div class="step-number">01</div>
+        <div class="step-icon-row">
+          <div class="step-icon"><i class="fa-solid fa-bullseye"></i></div>
+          <div class="step-title">Set the Stage</div>
+        </div>
+        <p class="step-detail">The facilitator introduces the theme and ground rules, creating a psychologically safe space where all voices are equal.</p>
+        <p class="step-detail-extra">🎯 Why it matters: Safety reduces social anxiety and lowers the barrier to participation. When people feel seen and respected, they engage more authentically.</p>
+        <p class="step-tap-hint"><i class="fa-solid fa-hand-pointer"></i> Click to expand</p>
+      </div>
+
+      <div class="process-step fade-up" onclick="toggleStep(this)">
+        <div class="step-number">02</div>
+        <div class="step-icon-row">
+          <div class="step-icon"><i class="fa-solid fa-comments"></i></div>
+          <div class="step-title">Capture the Questions</div>
+        </div>
+        <p class="step-detail">Every participant writes their burning questions or challenges on cards — no screening, no hierarchy. The room's real needs emerge.</p>
+        <p class="step-detail-extra">💡 Why it matters: This shifts agenda-setting power from organisers to attendees. The session becomes immediately relevant to everyone in the room.</p>
+        <p class="step-tap-hint"><i class="fa-solid fa-hand-pointer"></i> Click to expand</p>
+      </div>
+
+      <div class="process-step fade-up" onclick="toggleStep(this)">
+        <div class="step-number">03</div>
+        <div class="step-icon-row">
+          <div class="step-icon"><i class="fa-solid fa-people-group"></i></div>
+          <div class="step-title">Vote and Cluster</div>
+        </div>
+        <p class="step-detail">Participants vote on which topics to explore. Similar questions are clustered together, revealing the group's collective priorities.</p>
+        <p class="step-detail-extra">🗳️ Why it matters: Democratic prioritisation creates shared ownership. Attendees invest more deeply in conversations they helped choose.</p>
+        <p class="step-tap-hint"><i class="fa-solid fa-hand-pointer"></i> Click to expand</p>
+      </div>
+
+      <div class="process-step fade-up" onclick="toggleStep(this)">
+        <div class="step-number">04</div>
+        <div class="step-icon-row">
+          <div class="step-icon"><i class="fa-solid fa-rotate"></i></div>
+          <div class="step-title">Rotate and Explore</div>
+        </div>
+        <p class="step-detail">Small groups form around each top topic. Groups rotate so every participant engages with multiple conversations and diverse perspectives.</p>
+        <p class="step-detail-extra">🔄 Why it matters: Rotation ensures breadth of exposure and prevents echo chambers. Each group builds on what the previous one started — knowledge compounds.</p>
+        <p class="step-tap-hint"><i class="fa-solid fa-hand-pointer"></i> Click to expand</p>
+      </div>
+
+      <div class="process-step fade-up" onclick="toggleStep(this)">
+        <div class="step-number">05</div>
+        <div class="step-icon-row">
+          <div class="step-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+          <div class="step-title">Harvest Insights</div>
+        </div>
+        <p class="step-detail">A note-taker captures key ideas from each table. Insights are gathered, synthesised, and shared back with the whole group.</p>
+        <p class="step-detail-extra">📝 Why it matters: Making thinking visible validates contributions and creates a tangible output. Attendees leave with something real — not just a memory of a conversation.</p>
+        <p class="step-tap-hint"><i class="fa-solid fa-hand-pointer"></i> Click to expand</p>
+      </div>
+
+      <div class="process-step fade-up" onclick="toggleStep(this)">
+        <div class="step-number">06</div>
+        <div class="step-icon-row">
+          <div class="step-icon"><i class="fa-solid fa-mirror"></i></div>
+          <div class="step-title">Reflect and Close</div>
+        </div>
+        <p class="step-detail">The facilitator guides a whole-group reflection. Participants articulate one thing they're taking away and one action they'll take.</p>
+        <p class="step-detail-extra">✨ Why it matters: Structured reflection deepens learning. Committing to an action publicly increases follow-through and makes the event professionally meaningful.</p>
+        <p class="step-tap-hint"><i class="fa-solid fa-hand-pointer"></i> Click to expand</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES (FLIP CARDS) -->
+<section class="principles-section" id="principles">
+  <div class="container">
+    <p class="section-eyebrow fade-up">Design Principles</p>
+    <h2 class="section-title fade-up">What drives the format</h2>
+    <p class="section-intro fade-up">Seven principles underpin every Mind Meeting. Hover over each card to discover what they mean in practice.</p>
+
+    <div class="flip-grid">
+      <div class="flip-card fade-up">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="flip-front-icon" style="background: linear-gradient(135deg,#E8F4FD,#BFD9F7);">
+              <i class="fa-solid fa-person" style="color:#1A56A0;"></i>
+            </div>
+            <h4>Participant-Centred Design</h4>
+            <p class="flip-hint">Hover to learn more</p>
+          </div>
+          <div class="flip-back">
+            <p>The participant's needs, knowledge, and goals shape every decision — not the organiser's assumptions. The event exists to serve them.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card fade-up">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="flip-front-icon" style="background:linear-gradient(135deg,#E6F7F5,#B3EDE8);">
+              <i class="fa-solid fa-hands-holding" style="color:#0E9B8A;"></i>
+            </div>
+            <h4>Co-Creation</h4>
+            <p class="flip-hint">Hover to learn more</p>
+          </div>
+          <div class="flip-back">
+            <p>Participants aren't recipients of content — they build it together. The agenda, insights, and outputs are collectively owned and created.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card fade-up">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="flip-front-icon" style="background:linear-gradient(135deg,#FFF5E6,#FFDFA8);">
+              <i class="fa-solid fa-handshake" style="color:#D4820A;"></i>
+            </div>
+            <h4>Collaboration</h4>
+            <p class="flip-hint">Hover to learn more</p>
+          </div>
+          <div class="flip-back">
+            <p>Small group structures ensure every voice is heard. Competition is replaced by collective problem-solving and peer learning across disciplines.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card fade-up">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="flip-front-icon" style="background:linear-gradient(135deg,#F5EEFF,#DECFFF);">
+              <i class="fa-solid fa-face-smile" style="color:#7C4DFF;"></i>
+            </div>
+            <h4>Authenticity</h4>
+            <p class="flip-hint">Hover to learn more</p>
+          </div>
+          <div class="flip-back">
+            <p>Real questions, real challenges, real expertise. Mind Meetings reject performative expertise and polished presentations in favour of honest dialogue.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card fade-up">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="flip-front-icon" style="background:linear-gradient(135deg,#FFF0F0,#FFCCCC);">
+              <i class="fa-solid fa-sitemap" style="color:#D64545;"></i>
+            </div>
+            <h4>Structured Facilitation</h4>
+            <p class="flip-hint">Hover to learn more</p>
+          </div>
+          <div class="flip-back">
+            <p>Freedom within a framework. The facilitator creates containers for meaningful dialogue — clear timing, roles, and prompts that guide without constraining.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card fade-up">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="flip-front-icon" style="background:linear-gradient(135deg,#E8FCF5,#A8F0D8);">
+              <i class="fa-solid fa-magnifying-glass" style="color:#0D7A5E;"></i>
+            </div>
+            <h4>Reflection</h4>
+            <p class="flip-hint">Hover to learn more</p>
+          </div>
+          <div class="flip-back">
+            <p>Pausing to look back deepens understanding. Built-in reflection moments help participants connect new insights to their existing knowledge and practice.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card fade-up">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="flip-front-icon" style="background:linear-gradient(135deg,#EFF4FF,#BFCFFF);">
+              <i class="fa-solid fa-share-nodes" style="color:#2D56D8;"></i>
+            </div>
+            <h4>Knowledge Sharing</h4>
+            <p class="flip-hint">Hover to learn more</p>
+          </div>
+          <div class="flip-back">
+            <p>Insights harvested from conversations are shared back with the group. The whole becomes greater than the sum of its parts — collective intelligence in action.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THEORY -->
+<section class="theory-section" id="theory">
+  <div class="container">
+    <p class="section-eyebrow fade-up">The Science Behind It</p>
+    <h2 class="section-title fade-up">Why Mind Meetings work</h2>
+    <p class="section-intro fade-up">Four powerful theories explain why active, participatory formats produce deeper engagement and better learning than passive ones. Here's each one — in plain language.</p>
+
+    <div class="theory-cards">
+      <div class="theory-card t-kolb fade-up">
+        <div class="theory-card-header">
+          <span class="theory-tag">Learning Theory</span>
+          <div class="theory-name">Kolb's Experiential Learning</div>
+          <div class="theory-author">David Kolb, 1984</div>
+        </div>
+        <div class="theory-card-body">
+          <p class="theory-plain">Kolb argued we learn best through a four-stage cycle: having an experience, reflecting on it, drawing lessons, and trying something new. Simply hearing information isn't enough — we need to <em>do</em> and <em>feel</em>.</p>
+          <div class="theory-link">
+            <strong>In a Mind Meeting…</strong>
+            Participants experience real dialogue, reflect through structured close, abstract by connecting ideas to their work, and experiment by committing to an action. The full cycle completes in one session.
+          </div>
+        </div>
+      </div>
+
+      <div class="theory-card t-vygotsky fade-up">
+        <div class="theory-card-header">
+          <span class="theory-tag">Social Learning</span>
+          <div class="theory-name">Vygotsky's Social Learning</div>
+          <div class="theory-author">Lev Vygotsky, 1978</div>
+        </div>
+        <div class="theory-card-body">
+          <p class="theory-plain">Vygotsky believed learning happens between people, not just within them. The "Zone of Proximal Development" — the gap between what you can do alone and what you can do with support — is where the richest growth occurs.</p>
+          <div class="theory-link">
+            <strong>In a Mind Meeting…</strong>
+            Peers act as co-learners and mentors simultaneously. Rotating groups ensure everyone encounters ideas slightly beyond their current thinking, expanding their ZPD through social scaffolding.
+          </div>
+        </div>
+      </div>
+
+      <div class="theory-card t-flow fade-up">
+        <div class="theory-card-header">
+          <span class="theory-tag">Optimal Experience</span>
+          <div class="theory-name">Flow Theory</div>
+          <div class="theory-author">Mihaly Csikszentmihalyi, 1990</div>
+        </div>
+        <div class="theory-card-body">
+          <p class="theory-plain">Flow is the state of complete absorption in a task — when challenge and skill are perfectly balanced. In this state, time disappears, motivation is intrinsic, and performance peaks.</p>
+          <div class="theory-link">
+            <strong>In a Mind Meeting…</strong>
+            Participant-chosen topics ensure relevance. Facilitated small groups balance challenge with support. The result? Conversations that feel effortless yet deeply productive — the hallmarks of flow.
+          </div>
+        </div>
+      </div>
+
+      <div class="theory-card t-sdt fade-up">
+        <div class="theory-card-header">
+          <span class="theory-tag">Motivation</span>
+          <div class="theory-name">Self-Determination Theory</div>
+          <div class="theory-author">Ryan & Deci, 2000</div>
+        </div>
+        <div class="theory-card-body">
+          <p class="theory-plain">SDT identifies three core human needs that drive intrinsic motivation: autonomy (choosing your path), competence (feeling capable), and relatedness (connecting with others). When all three are met, engagement is deep and lasting.</p>
+          <div class="theory-link">
+            <strong>In a Mind Meeting…</strong>
+            Autonomy: participants shape the agenda. Competence: everyone's expertise is valued. Relatedness: collaborative structure builds real connections. All three needs are addressed simultaneously.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="quiz-section" id="quiz">
+  <div class="container" style="position:relative;z-index:1;">
+    <p class="section-eyebrow fade-up" style="color:var(--teal-light);">Test Your Knowledge</p>
+    <h2 class="section-title fade-up" style="color:white;">Quick-fire quiz</h2>
+    <p class="section-intro fade-up">Five questions — instant feedback — no pressure. Let's see what you've absorbed!</p>
+
+    <div class="quiz-wrapper" id="quizWrapper">
+      <div id="quizQuestion">
+        <div class="quiz-progress-row">
+          <span class="quiz-progress-label" id="quizProgressLabel">Question 1 of 5</span>
+          <div class="quiz-dots" id="quizDots"></div>
+        </div>
+        <div class="quiz-question" id="qText"></div>
+        <div class="quiz-options" id="qOptions"></div>
+        <div class="quiz-feedback" id="qFeedback"></div>
+        <button class="quiz-next" id="qNext" onclick="nextQuestion()">Next question <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+      <div class="quiz-result" id="quizResult">
+        <div class="result-score" id="resultScore"></div>
+        <div class="result-label">out of 5 correct</div>
+        <p class="result-msg" id="resultMsg"></p>
+        <button class="quiz-restart" onclick="restartQuiz()"><i class="fa-solid fa-rotate-left"></i> Try again</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TAKEAWAYS -->
+<section class="takeaways-section" id="takeaways">
+  <div class="container">
+    <p class="section-eyebrow fade-up">Summary</p>
+    <h2 class="section-title fade-up">Key takeaways</h2>
+    <p class="section-intro fade-up">Everything you need to remember — distilled into seven essential ideas.</p>
+
+    <div class="takeaway-list">
+      <div class="takeaway-item fade-up">
+        <div class="takeaway-num">1</div>
+        <p><strong>Mind Meetings put participants in charge.</strong> The agenda is co-created by the people in the room, making sessions instantly relevant and personally meaningful.</p>
+      </div>
+      <div class="takeaway-item fade-up">
+        <div class="takeaway-num">2</div>
+        <p><strong>Structure enables freedom.</strong> Facilitation provides the container; participants fill it with authentic, valuable content. Both elements are essential.</p>
+      </div>
+      <div class="takeaway-item fade-up">
+        <div class="takeaway-num">3</div>
+        <p><strong>Learning requires doing.</strong> Kolb's cycle reminds us that passive listening produces shallow retention. Action, dialogue, and reflection produce lasting change.</p>
+      </div>
+      <div class="takeaway-item fade-up">
+        <div class="takeaway-num">4</div>
+        <p><strong>Other people are the curriculum.</strong> Vygotsky showed us that peers expand what we're capable of. Diverse small groups are powerful learning environments.</p>
+      </div>
+      <div class="takeaway-item fade-up">
+        <div class="takeaway-num">5</div>
+        <p><strong>Challenge + relevance = flow.</strong> When topics are chosen by participants and conversations are facilitated well, engagement becomes effortless and deep.</p>
+      </div>
+      <div class="takeaway-item fade-up">
+        <div class="takeaway-num">6</div>
+        <p><strong>Autonomy, competence, and connection drive motivation.</strong> SDT explains why Mind Meetings feel different: they address all three core human needs simultaneously.</p>
+      </div>
+      <div class="takeaway-item fade-up">
+        <div class="takeaway-num">7</div>
+        <p><strong>The format is transferable.</strong> You can apply these principles to workshops, team meetings, community events, and professional conferences at any scale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">Mind<span>Meeting</span></div>
+  <p>An interactive learning module for junior event professionals.<br>
+  Based on the EventProfs Vision 2025 Report. Theories: Kolb (1984) · Vygotsky (1978) · Csikszentmihalyi (1990) · Ryan & Deci (2000).<br>
+  *Indicative figure based on active learning research. Always verify with primary sources.</p>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('progress-bar').style.width = (scrollTop / docH * 100) + '%';
+  });
+
+  // Fade-up observer
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Process step toggle
+  function toggleStep(el) {
+    const wasActive = el.classList.contains('active');
+    document.querySelectorAll('.process-step').forEach(s => s.classList.remove('active'));
+    if (!wasActive) el.classList.add('active');
+    const hint = el.querySelector('.step-tap-hint');
+    if (hint) hint.textContent = el.classList.contains('active') ? '↑ Click to collapse' : '👆 Click to expand';
+  }
+
+  // Flip cards — touch support
+  document.querySelectorAll('.flip-card').forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('flipped'));
+  });
+
+  // QUIZ
+  const questions = [
+    {
+      q: "In a Mind Meeting, who sets the agenda for the session?",
+      opts: ["The event organiser before the event", "The keynote speaker", "The participants themselves, through voting", "An external consultant"],
+      correct: 2,
+      feedback: "Correct! Participant-led agenda-setting is one of the defining features of a Mind Meeting. It makes sessions immediately relevant to everyone in the room."
+    },
+    {
+      q: "Which of Kolb's four learning stages involves drawing general lessons from an experience?",
+      opts: ["Concrete Experience", "Reflective Observation", "Abstract Conceptualisation", "Active Experimentation"],
+      correct: 2,
+      feedback: "Spot on! Abstract Conceptualisation is where we move from 'what happened?' to 'what does this mean in general?' — a critical step in deep learning."
+    },
+    {
+      q: "Vygotsky's 'Zone of Proximal Development' describes...",
+      opts: ["A physical space in the conference room", "The gap between what you know alone vs. with support", "A digital engagement tool", "The time between sessions at a conference"],
+      correct: 1,
+      feedback: "Exactly right! The ZPD is where the richest learning happens — at the edge of our current capability, supported by peers and facilitators."
+    },
+    {
+      q: "According to Flow Theory, when does 'flow' occur?",
+      opts: ["When a task is very easy and requires little effort", "When challenge and skill level are perfectly balanced", "Only during physical activities", "When participants are given clear instructions"],
+      correct: 1,
+      feedback: "Right! Csikszentmihalyi found that flow — deep, effortless engagement — happens at the sweet spot where challenge matches capability."
+    },
+    {
+      q: "Self-Determination Theory (SDT) identifies three needs for intrinsic motivation. Which of the following is NOT one of them?",
+      opts: ["Autonomy", "Competence", "Competition", "Relatedness"],
+      correct: 2,
+      feedback: "Correct! The three SDT needs are Autonomy, Competence, and Relatedness. Competition is not one of them — in fact, it can undermine intrinsic motivation when overdone!"
+    }
+  ];
+
+  let current = 0, score = 0, answered = false;
+
+  function buildDots() {
+    const dotsEl = document.getElementById('quizDots');
+    dotsEl.innerHTML = '';
+    questions.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'quiz-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+      dotsEl.appendChild(d);
+    });
+  }
+
+  function loadQuestion() {
+    answered = false;
+    const q = questions[current];
+    document.getElementById('quizProgressLabel').textContent = `Question ${current + 1} of ${questions.length}`;
+    document.getElementById('qText').textContent = q.q;
+    buildDots();
+
+    const opts = document.getElementById('qOptions');
+    opts.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+    q.opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt}`;
+      btn.onclick = () => selectAnswer(i, btn);
+      opts.appendChild(btn);
+    });
+
+    const fb = document.getElementById('qFeedback');
+    fb.className = 'quiz-feedback';
+    fb.innerHTML = '';
+    document.getElementById('qNext').classList.remove('show');
+    document.getElementById('qNext').textContent = current === questions.length - 1 ? 'See results 🎉' : 'Next question →';
+  }
+
+  function selectAnswer(chosen, btn) {
+    if (answered) return;
+    answered = true;
+    const q = questions[current];
+    const btns = document.querySelectorAll('.quiz-option');
+    btns.forEach(b => b.disabled = true);
+
+    if (chosen === q.correct) {
+      btn.classList.add('correct');
+      score++;
+      const fb = document.getElementById('qFeedback');
+      fb.className = 'quiz-feedback correct-fb show';
+      fb.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>${q.feedback}</span>`;
+    } else {
+      btn.classList.add('wrong');
+      btns[q.correct].classList.add('correct');
+      const fb = document.getElementById('qFeedback');
+      fb.className = 'quiz-feedback wrong-fb show';
+      fb.innerHTML = `<i class="fa-solid fa-circle-xmark"></i><span>Not quite — the correct answer is highlighted. ${q.feedback}</span>`;
+    }
+
+    document.getElementById('qNext').classList.add('show');
+  }
+
+  function nextQuestion() {
+    current++;
+    if (current >= questions.length) {
+      showResult();
+    } else {
+      loadQuestion();
+    }
+  }
+
+  function showResult() {
+    document.getElementById('quizQuestion').style.display = 'none';
+    const res = document.getElementById('quizResult');
+    res.classList.add('show');
+    document.getElementById('resultScore').textContent = score;
+    const msgs = [
+      "Keep exploring! Review the sections above and try again — the concepts will click with another pass.",
+      "Good start! You're getting there. Re-read the theory section and give it another go.",
+      "Solid understanding! You've grasped the core ideas. A re-read of the principles will sharpen it further.",
+      "Great work! You've absorbed the key concepts well. One more pass and you'll have it locked in.",
+      "Excellent! You've mastered the material. You're ready to design your own Mind Meeting! 🎉"
+    ];
+    document.getElementById('resultMsg').textContent = msgs[score] || msgs[4];
+  }
+
+  function restartQuiz() {
+    current = 0; score = 0; answered = false;
+    document.getElementById('quizResult').classList.remove('show');
+    document.getElementById('quizQuestion').style.display = 'block';
+    loadQuestion();
+  }
+
+  loadQuestion();
+</script>
+</body>
+</html>
